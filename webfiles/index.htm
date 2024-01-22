@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="/bootstrap.min.css" rel="stylesheet">
+	<!-- Option 1: Bootstrap Bundle with Popper -->
+	<script src="/bootstrap.bundle.min.js"></script>
+
+	<script>
+		var ajax = function(url, contentType, method) {
+			return new Promise(function(resolve, reject) {
+				if(method == undefined) method = "GET";
+				if(contentType == undefined) contentType = "application/json";
+				//Content-Type: application/json
+				//Accept: application/json
+				var xhr = new XMLHttpRequest();
+				xhr.onload = function() {
+					if (this.status >= 200 && this.status < 300) {
+						try {
+							if(contentType == "application/json"){
+								resolve(JSON.parse(this.responseText));
+							} else {
+								resolve(this.responseText);
+							}
+							
+						} catch (e) {
+							reject(e);
+						}
+					} else {
+						reject({
+							status: this.status,
+							statusText: xhr.statusText
+						});
+					}
+					
+				};
+				xhr.onerror = reject;
+				xhr.open(method, url);
+				xhr.send();
+			});
+			return xhr;
+		}
+		var getMenu = function(){
+			//$( "div.menu" ).load( "/autoconnectMenu" );
+			ajax("/autoconnectMenu","text/html").then(function(data) {
+				//console.log(data);
+				document.querySelector('div.menu').innerHTML = data;
+			});
+		}
+		
+		var getConfig = function(){
+			ajax("/config.json").then(
+				function(data){
+					console.log("success", "Config loaded", data);
+				}, 
+				function(jqxhr, textStatus, err){
+					console.log("error", "Error geting Config", err);
+				}
+			);
+		}
+		document.addEventListener('DOMContentLoaded', function () {
+			getMenu();
+			getConfig();
+			var btnSend = document.querySelector('.btnSend');
+			btnSend.addEventListener('click', function() {
+				var pitchType = document.querySelector('input[name="pitchType"]:checked').value;
+				var locationType = document.querySelector('input[name="locationType"]:checked').value;
+				var url = '/sendpitch?pitch=' + pitchType + '&location=' + locationType;
+				ajax(url).then(function(data) {
+					console.log(data);
+				});
+			});
+		});
+	</script>
+
+    <title>Coach Call</title>
+  </head>
+  <body>
+	<div class="menu"></div>
+	<div class="container">
+		<div >
+			<div class="row"  aria-label="Pitch Type">
+				<div class="col">
+					<input type="radio" class="btn-check" name="pitchType" id="pitchType1" autocomplete="off" value="Fastball" checked />
+					<label class="btn btn-outline-primary" for="pitchType1">Fastball</label>
+				</div>
+				<div class="col">
+					<input type="radio" class="btn-check" name="pitchType" id="pitchType2" autocomplete="off" value="Curve" />
+					<label class="btn btn-outline-primary" for="pitchType2">Curve</label>
+				</div>
+				<div class="col"> 
+					<input type="radio" class="btn-check" name="pitchType" id="pitchType3" autocomplete="off" value="Change" />
+					<label class="btn btn-outline-primary" for="pitchType3">Change</label>
+				</div>
+			</div>
+		
+			<div class="row" aria-label="Location">
+				<div class="col">
+					<input type="radio" class="btn-check" name="locationType" id="locationType1" autocomplete="off" value="Inside" checked />
+					<label class="btn btn-outline-primary" for="locationType1">Inside</label>
+				</div>
+				<div class="col">
+					<input type="radio" class="btn-check" name="locationType" id="locationType2" autocomplete="off" value="Middle" />
+					<label class="btn btn-outline-primary" for="locationType2">Middle</label>
+				</div>
+				<div class="col">
+					<input type="radio" class="btn-check" name="locationType" id="locationType3" autocomplete="off" value="Outside" />
+					<label class="btn btn-outline-primary" for="locationType3">Outside</label>
+			  	</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<button type="button" class="btn btn-primary btnSend">Send</button>
+			</div>
+		</div>
+	</div>
+    
+  </body>
+</html>
