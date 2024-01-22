@@ -96,6 +96,7 @@ void setup() {
     Serial.println("BME280 found OK");
     bmefound = true;
   }
+  setupFileSystem();
   setupAutoConnect();
 }
 
@@ -104,9 +105,9 @@ uint8_t j = 0;
 void loop() {
 
   if (j % 5 == 0) {
-    Serial.println("**********************");
+    //Serial.println("**********************");
 
-    TB.printI2CBusScan();
+    //TB.printI2CBusScan();
     canvas.fillScreen(ST77XX_BLACK);
     canvas.setCursor(0, 25);
     canvas.setTextColor(ST77XX_RED);
@@ -131,13 +132,13 @@ void loop() {
     canvas.setTextColor(ST77XX_BLUE); 
     canvas.print("I2C: ");
     canvas.setTextColor(ST77XX_WHITE);
-    for (uint8_t a=0x01; a<=0x7F; a++) {
-      if (TB.scanI2CBus(a, 0))  {
-        canvas.print("0x");
-        canvas.print(a, HEX);
-        canvas.print(", ");
-      }
-    }
+    // for (uint8_t a=0x01; a<=0x7F; a++) {
+    //   if (TB.scanI2CBus(a, 0))  {
+    //     canvas.print("0x");
+    //     canvas.print(a, HEX);
+    //     canvas.print(", ");
+    //   }
+    // }
     display.drawRGBBitmap(0, 0, canvas.getBuffer(), 240, 135);
     pinMode(TFT_BACKLITE, OUTPUT);
     digitalWrite(TFT_BACKLITE, HIGH);

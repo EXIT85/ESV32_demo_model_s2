@@ -209,7 +209,7 @@ void handleFileList() {
         file = root.openNextFile();
     }
   }else{
-    Serial.println("handleFileList: Error root is not a directory");
+    Serial.println("handleFileList: Error root is not a directory. Did you Format? Is It SPIFS Mode");
   }
   output += "]";
   Server.send(200, "text/json", output);
@@ -275,5 +275,7 @@ void addFilesToWebServer(){
           file = root.openNextFile();
       }
       Serial.printf("\n");
+  }else{
+    Serial.println("Error: File System not OK");
   }
 }
