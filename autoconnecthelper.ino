@@ -54,7 +54,7 @@ AutoConnectConfig Config;
 //AutoConnectUpdate autoConnectUpdate;
 //AutoConnectUpdate update("10.100.6.36", 1380, "/updates/ESP32LR88", 30000, HIGH);
 //WiFiServer server(80);
-//WiFiServer tcpServer(0);
+//WiFiServer tcpServer(0); carl
 
 bool useStatic = false;
 IPAddress staticIp(192, 168, 7, 2);
